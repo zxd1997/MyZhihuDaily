@@ -1,25 +1,23 @@
 package com.example.zxd1997.myzhihudaily;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -33,34 +31,20 @@ import okhttp3.Response;
 
 
 public class ScrollingActivity extends AppCompatActivity {
-
+    RecyclerView recyclerView;
     @SuppressLint("HandlerLeak")
     public Handler handler = new Handler() {
         public void handleMessage(Message msg) {
-//            TextView textView=(TextView)findViewById(R.id.text);
-//            textView.setText((String)msg.obj);
             Daily daily = new Gson().fromJson((String) msg.obj, Daily.class);
-            final List<Daily.Story> stories = daily.getStories();
+            final List<Daily.Story> stories;
+            stories = daily.getStories();
             List<Daily.Story> topStorie = daily.getTopStories();
             String tmp = daily.getDate();
             for (Daily.Story i : stories) {
                 tmp += i.getId();
             }
-            Log.d("ListView", "handleMessage: " + tmp);
-//            textView.setText(tmp);
-            StoryAdapter storyAdapter = new StoryAdapter(ScrollingActivity.this, R.layout.listview_content, stories);
-            MyListView listView = findViewById(R.id.listView);
-            listView.setAdapter(storyAdapter);
-            listView.setOnClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Daily.Story story = stories.get(position);
-                    Intent intent = new Intent(ScrollingActivity.this, contentActivity.class);
-                    intent.putExtra("id", story.getId() + "");
-                    intent.putExtra("title", story.getTitle());
-                    startActivity(intent);
-                }
-            });
+            StoryAdapter storyAdapter = new StoryAdapter(ScrollingActivity.this, stories);
+            recyclerView.setAdapter(storyAdapter);
         }
     };
 
@@ -78,8 +62,9 @@ public class ScrollingActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
                 Message msg = new Message();
-                msg.obj = response.body().string();handler.sendMessage(msg);Log.d("msg", "onResponse: "+(String)msg.obj);
-//                Log.d("msg", "onResponse: "+(String)msg.obj);
+                msg.obj = response.body().string();
+                handler.sendMessage(msg);
+                Log.d("msg", "onResponse: " + (String) msg.obj);
             }
         });
     }
@@ -87,7 +72,17 @@ public class ScrollingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.activity_scrolling);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ScrollingActivity.this);
+        recyclerView.setLayoutManager(linearLayoutManager);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -99,15 +94,8 @@ public class ScrollingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final Snackbar snackbar = Snackbar.make(view, "Refreshed", Snackbar.LENGTH_LONG)
                         .setAction("Action", null);
-                new Thread(
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                getFromService();
-                                snackbar.show();
-                            }
-                        }
-                ).start();
+                getFromService();
+                snackbar.show();
             }
         });
     }

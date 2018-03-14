@@ -1,7 +1,5 @@
 package com.example.zxd1997.myzhihudaily;
 
-import android.util.Log;
-
 import java.util.List;
 
 /**

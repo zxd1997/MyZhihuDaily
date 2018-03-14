@@ -39,5 +39,16 @@
 
     <include layout="@layout/content_content" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:contentDescription="@string/app_name"
+        app:layout_anchor="@id/NestedScrollView1"
+        app:layout_anchorGravity="bottom|right"
+        app:srcCompat="@android:drawable/stat_notify_chat" />
+
 
 </android.support.design.widget.CoordinatorLayout>

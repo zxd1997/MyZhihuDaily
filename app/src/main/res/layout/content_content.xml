@@ -8,7 +8,8 @@
     tools:context="com.example.zxd1997.myzhihudaily.contentActivity"
     tools:showIn="@layout/activity_content"
     android:layout_marginBottom="-200dp"
-    android:background="#e9e9e9">
+    android:background="#e9e9e9"
+    android:id="@+id/NestedScrollView1">
 
     <WebView
         android:id="@+id/webView"
@@ -18,6 +19,5 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_marginTop="-200dp"
-        android:background="@drawable/card"
         />
 </android.support.v4.widget.NestedScrollView>

@@ -9,19 +9,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
 import com.google.gson.Gson;
-
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -102,11 +97,20 @@ public class contentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_content);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         setTitle(intent.getStringExtra("title"));
         id = intent.getStringExtra("id");
         getFromService();
+        FloatingActionButton fab = findViewById(R.id.fab1);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(contentActivity.this, CommentActivity.class);
+                intent1.putExtra("id", id);
+                startActivity(intent1);
+            }
+        });
     }
 }

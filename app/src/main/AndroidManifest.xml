@@ -24,6 +24,10 @@
         <activity
             android:name=".contentActivity"
             android:label="@string/title_activity_content"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CommentActivity"
+            android:label="@string/title_activity_comment"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

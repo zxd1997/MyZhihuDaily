@@ -91,4 +91,6 @@
     </string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_content">contentActivity</string>
+    <string name="title_activity_conment">ConmentActivity</string>
+    <string name="title_activity_comment">CommentActivity</string>
 </resources>
