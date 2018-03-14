@@ -25,6 +25,8 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -32,49 +34,56 @@ import okhttp3.Response;
 
 public class ScrollingActivity extends AppCompatActivity {
 
-    public void getFromService(){
-        try {
-            OkHttpClient client =new OkHttpClient();
-            Request request=new Request.Builder()
-                    .url("https://news-at.zhihu.com/api/4/news/latest")
-                    .build();
-            Response response=client.newCall(request).execute();
-            Message msg=new Message();
-            msg.obj=response.body().string();
-            this.handler.sendMessage(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     @SuppressLint("HandlerLeak")
-    public Handler handler=new Handler(){
-        public void handleMessage(Message msg){
+    public Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
 //            TextView textView=(TextView)findViewById(R.id.text);
 //            textView.setText((String)msg.obj);
-            Daily daily=new Gson().fromJson((String)msg.obj,Daily.class);
-            final List<Daily.Story> stories=daily.getStories();
-            List<Daily.Story> topStorie=daily.getTopStories();
-            String tmp=daily.getDate();
-            for (Daily.Story i :stories){
-                tmp+=i.getId();
+            Daily daily = new Gson().fromJson((String) msg.obj, Daily.class);
+            final List<Daily.Story> stories = daily.getStories();
+            List<Daily.Story> topStorie = daily.getTopStories();
+            String tmp = daily.getDate();
+            for (Daily.Story i : stories) {
+                tmp += i.getId();
             }
-            Log.d("ListView", "handleMessage: "+tmp);
+            Log.d("ListView", "handleMessage: " + tmp);
 //            textView.setText(tmp);
-            StoryAdapter storyAdapter=new StoryAdapter(ScrollingActivity.this,R.layout.listview_content,stories);
-            MyListView listView=findViewById(R.id.listView);
+            StoryAdapter storyAdapter = new StoryAdapter(ScrollingActivity.this, R.layout.listview_content, stories);
+            MyListView listView = findViewById(R.id.listView);
             listView.setAdapter(storyAdapter);
-            listView.setOnClickListener(new AdapterView.OnItemClickListener(){
+            listView.setOnClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent,View view,int position,long id){
-                    Daily.Story story=stories.get(position);
-                    Intent intent=new Intent(ScrollingActivity.this,contentActivity.class);
-                    intent.putExtra("id",story.getId()+"");
-                    intent.putExtra("title",story.getTitle());
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Daily.Story story = stories.get(position);
+                    Intent intent = new Intent(ScrollingActivity.this, contentActivity.class);
+                    intent.putExtra("id", story.getId() + "");
+                    intent.putExtra("title", story.getTitle());
                     startActivity(intent);
                 }
             });
         }
     };
+
+    public void getFromService() {
+
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("https://news-at.zhihu.com/api/4/news/latest")
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                Message msg = new Message();
+                msg.obj = response.body().string();handler.sendMessage(msg);Log.d("msg", "onResponse: "+(String)msg.obj);
+//                Log.d("msg", "onResponse: "+(String)msg.obj);
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,19 +92,12 @@ public class ScrollingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        getFromService();
-                    }
-                }
-        ).start();
+        getFromService();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Snackbar snackbar=Snackbar.make(view, "Refreshed", Snackbar.LENGTH_LONG)
+                final Snackbar snackbar = Snackbar.make(view, "Refreshed", Snackbar.LENGTH_LONG)
                         .setAction("Action", null);
                 new Thread(
                         new Runnable() {
