@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.gson.Gson;
@@ -43,6 +44,10 @@ public class ScrollingActivity extends AppCompatActivity {
             for (Daily.Story i : stories) {
                 tmp += i.getId();
             }
+            if (stories.size() == 0) return;
+            TextView textView = findViewById(R.id.textView3);
+            textView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
             StoryAdapter storyAdapter = new StoryAdapter(ScrollingActivity.this, stories);
             recyclerView.setAdapter(storyAdapter);
         }

@@ -23,7 +23,7 @@
             android:fitsSystemWindows="true"
             app:layout_collapseMode="pin"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Comment" />
+            app:title="Comments" />
 
     </android.support.design.widget.AppBarLayout>
 

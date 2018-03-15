@@ -3,7 +3,10 @@ package com.example.zxd1997.myzhihudaily;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -45,7 +48,13 @@ public class contentActivity extends AppCompatActivity {
     Handler handler1 = new Handler() {
         public void handleMessage(Message msg) {
             CollapsingToolbarLayout toolbar = findViewById(R.id.toolbar_layout);
-            toolbar.setBackground(new BitmapDrawable((Bitmap) msg.obj));
+            Bitmap bitmap = ((Bitmap) msg.obj);
+            Matrix matrix = new Matrix();
+            matrix.setScale(1.8f, 1.8f);
+            Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            BitmapDrawable drawable = new BitmapDrawable(resizeBmp);
+            drawable.setTileModeX(Shader.TileMode.CLAMP);
+            toolbar.setBackground(drawable);
         }
     };
 

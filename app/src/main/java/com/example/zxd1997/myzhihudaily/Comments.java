@@ -84,6 +84,10 @@ public class Comments {
 
         private Reply reply_to;
 
+        public boolean isReply() {
+            if (reply_to == null) return false;
+            else return true;
+        }
         public class Reply {
             private String content;
             private int status;

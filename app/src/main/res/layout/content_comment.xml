@@ -8,4 +8,17 @@
     tools:context="com.example.zxd1997.myzhihudaily.CommentActivity"
     tools:showIn="@layout/activity_comment">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="There's No Comments"
+        android:textSize="18sp"
+        android:gravity="center" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView1"
+        android:visibility="gone" />
 </android.support.constraint.ConstraintLayout>
