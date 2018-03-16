@@ -34,6 +34,7 @@ import okhttp3.Response;
 public class CommentActivity extends AppCompatActivity {
     public String id;
     RecyclerView recyclerView;
+    CommentAdapter commentAdapter;
     public List<Comments.Comment> allComments = new ArrayList<Comments.Comment>();
 
     public void getFromService(String uri) {
@@ -73,8 +74,7 @@ public class CommentActivity extends AppCompatActivity {
             TextView textView = findViewById(R.id.textView2);
             textView.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            CommentAdapter commentAdapter = new CommentAdapter(allComments);
-            recyclerView.setAdapter(commentAdapter);
+            commentAdapter.notifyDataSetChanged();
         }
     };
     @Override
@@ -94,6 +94,8 @@ public class CommentActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(CommentActivity.this, DividerItemDecoration.VERTICAL));
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(CommentActivity.this);
         recyclerView.setLayoutManager(layoutManager);
+        commentAdapter = new CommentAdapter(allComments);
+        recyclerView.setAdapter(commentAdapter);
     }
 
 }

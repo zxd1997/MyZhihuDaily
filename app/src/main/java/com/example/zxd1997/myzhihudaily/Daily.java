@@ -9,7 +9,6 @@ import java.util.List;
 public class Daily {
     private String date;
     private List<Story> stories;
-    private List<Story> topStories;
 
     public String getDate() {
         return date;
@@ -25,14 +24,6 @@ public class Daily {
 
     public void setStories(List<Story> stories) {
         this.stories = stories;
-    }
-
-    public List<Story> getTopStories() {
-        return topStories;
-    }
-
-    public void setTopStories(List<Story> topStories) {
-        this.topStories = topStories;
     }
 
     public class Story{
