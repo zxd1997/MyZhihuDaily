@@ -86,6 +86,7 @@ public class ScrollingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
         calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);
         final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         today = format.format(calendar.getTime());
         Log.d("date", "onCreate: " + today);
@@ -131,6 +132,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 nestedScrollView.smoothScrollTo(0, 0);
                 recyclerView.scrollToPosition(0);
                 calendar = Calendar.getInstance();
+                calendar.add(Calendar.DATE, 1);
                 today = format.format(calendar.getTime());
                 getFromService(today);
                 snackbar.show();
