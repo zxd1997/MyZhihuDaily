@@ -47,38 +47,48 @@ public class ScrollingActivity extends AppCompatActivity {
     String today;
     Calendar calendar;
     NestedScrollView nestedScrollView;
+    final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
     @SuppressLint("HandlerLeak")
     public Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            Daily daily = new Gson().fromJson((String) msg.obj, Daily.class);
-            stories.addAll(daily.getStories());
-            if (stories.size() == 0) return;
-            TextView textView = findViewById(R.id.textView3);
-            textView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            storyAdapter.notifyDataSetChanged();
+        public synchronized void handleMessage(Message msg) {
+            synchronized (this) {
+                Log.d("msg", "handleMessage: " + msg.obj);
+                Daily daily = new Gson().fromJson((String) msg.obj, Daily.class);
+                stories.addAll(daily.getStories());
+                if (stories.size() == 0) return;
+                if (stories.size() <= 6) {
+                    calendar.add(Calendar.DATE, -1);
+                    getFromService(format.format(calendar.getTime()));
+                }
+                TextView textView = findViewById(R.id.textView3);
+                textView.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                storyAdapter.notifyDataSetChanged();
+            }
         }
     };
 
-    public void getFromService(String date) {
+    public synchronized void getFromService(String date) {
         Log.d("date", "getFromService: " + date);
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url("https://news-at.zhihu.com/api/4/news/before/" + date)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-            }
+        synchronized (this) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url("https://news-at.zhihu.com/api/4/news/before/" + date)
+                    .build();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                }
 
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                Message msg = new Message();
-                msg.obj = response.body().string();
-                handler.sendMessage(msg);
-                Log.d("msg", "onResponse: " + (String) msg.obj);
-            }
-        });
+                @Override
+                public void onResponse(Call call, final Response response) throws IOException {
+                    Message msg = new Message();
+                    msg.obj = response.body().string();
+                    handler.sendMessage(msg);
+                    Log.d("msg", "onResponse: " + (String) msg.obj);
+                }
+            });
+        }
     }
 
     @Override
@@ -87,7 +97,6 @@ public class ScrollingActivity extends AppCompatActivity {
         Fresco.initialize(this);
         calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 1);
-        final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         today = format.format(calendar.getTime());
         Log.d("date", "onCreate: " + today);
         setContentView(R.layout.activity_scrolling);
