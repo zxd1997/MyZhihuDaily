@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,10 +44,10 @@ import okhttp3.Response;
 public class ScrollingActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     StoryAdapter storyAdapter;
+    SwipeRefreshLayout swipeRefreshLayout;
     List<Daily.Story> stories = new ArrayList<Daily.Story>();
     String today;
     Calendar calendar;
-    NestedScrollView nestedScrollView;
     final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
     @SuppressLint("HandlerLeak")
     public Handler handler = new Handler() {
@@ -64,6 +65,7 @@ public class ScrollingActivity extends AppCompatActivity {
                 textView.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
                 storyAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
             }
         }
     };
@@ -100,8 +102,21 @@ public class ScrollingActivity extends AppCompatActivity {
         today = format.format(calendar.getTime());
         Log.d("date", "onCreate: " + today);
         setContentView(R.layout.activity_scrolling);
+        swipeRefreshLayout = findViewById(R.id.swipe);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                stories.clear();
+                recyclerView.scrollToPosition(0);
+                calendar = Calendar.getInstance();
+                calendar.add(Calendar.DATE, 1);
+                today = format.format(calendar.getTime());
+                getFromService(today);
+            }
+
+        });
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
         recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
         recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
@@ -111,42 +126,13 @@ public class ScrollingActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         storyAdapter = new StoryAdapter(ScrollingActivity.this, stories);
         recyclerView.setAdapter(storyAdapter);
-        nestedScrollView = findViewById(R.id.NestedScrollView);
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (scrollY != 0 && scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                    v.smoothScrollTo(scrollX,scrollY);
-//                    recyclerView.scrollToPosition(recyclerView.getLayoutManager().getItemCount());
-//                    v.smoothScrollBy(0,1);
-                    Log.i("scroll", "BOTTOM SCROLL" + scrollY);
-                    calendar.add(Calendar.DATE, -1);
-                    getFromService(format.format(calendar.getTime()));
-                    v.smoothScrollTo(scrollX, scrollY);
-                }
-            }
-        });
+//                    calendar.add(Calendar.DATE, -1);
+//                    getFromService(format.format(calendar.getTime()));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         getFromService(today);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Snackbar snackbar = Snackbar.make(view, "Refreshed", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null);
-                stories.clear();
-                nestedScrollView.smoothScrollTo(0, 0);
-                recyclerView.scrollToPosition(0);
-                calendar = Calendar.getInstance();
-                calendar.add(Calendar.DATE, 1);
-                today = format.format(calendar.getTime());
-                getFromService(today);
-                snackbar.show();
-            }
-        });
     }
 
     @Override
