@@ -114,20 +114,30 @@ public class ScrollingActivity extends AppCompatActivity {
                 today = format.format(calendar.getTime());
                 getFromService(today);
             }
-
         });
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
-        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
-        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
-        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
-        recyclerView.addItemDecoration(new DividerItemDecoration(ScrollingActivity.this, DividerItemDecoration.VERTICAL));
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ScrollingActivity.this);
+        recyclerView.addItemDecoration(new SimpleDecoration(this));
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ScrollingActivity.this);
         recyclerView.setLayoutManager(linearLayoutManager);
         storyAdapter = new StoryAdapter(ScrollingActivity.this, stories);
         recyclerView.setAdapter(storyAdapter);
-//                    calendar.add(Calendar.DATE, -1);
-//                    getFromService(format.format(calendar.getTime()));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                Log.d("aaaa", "onScrollStateChanged: " + linearLayoutManager.findLastVisibleItemPosition() + " " + storyAdapter.getItemCount());
+                if (linearLayoutManager.findLastVisibleItemPosition() == storyAdapter.getItemCount() - 1) {
+                    swipeRefreshLayout.setRefreshing(true);
+                    calendar.add(Calendar.DATE, -1);
+                    getFromService(format.format(calendar.getTime()));
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);

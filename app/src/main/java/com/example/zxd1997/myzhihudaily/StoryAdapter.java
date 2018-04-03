@@ -30,36 +30,58 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (position == stories.size())
+            return 1;
+        else return 0;
+    }
+    @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_content, parent, false);
-        final ViewHolder viewHolder = new ViewHolder(view);
-        viewHolder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = viewHolder.getAdapterPosition();
-                Daily.Story story = stories.get(position);
-                Intent intent = new Intent(context, contentActivity.class);
-                intent.putExtra("id", story.getId() + "");
-                intent.putExtra("title", story.getTitle());
-                context.startActivity(intent);
-            }
-        });
+        final ViewHolder viewHolder;
+        if (viewType == 0) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_content, parent, false);
+            viewHolder = new ViewHolder(view);
+            viewHolder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = viewHolder.getAdapterPosition();
+                    Daily.Story story = stories.get(position);
+                    Intent intent = new Intent(context, contentActivity.class);
+                    intent.putExtra("id", story.getId() + "");
+                    intent.putExtra("title", story.getTitle());
+                    context.startActivity(intent);
+                }
+            });
+        } else {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);
+            viewHolder = new ViewHolder(view);
+        }
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Daily.Story story = stories.get(position);
-        holder.textView.setText(story.getTitle());
-        Uri uri = Uri.parse(story.getImages().get(0));
-        holder.imageView.setImageURI(uri);
+        if (position < stories.size()) {
+            Daily.Story story = stories.get(position);
+            holder.textView.setText(story.getTitle());
+            Uri uri = Uri.parse(story.getImages().get(0));
+            holder.imageView.setImageURI(uri);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return stories.size();
+        return stories.size() + 1;
     }
 
+    class FootHolder extends RecyclerView.ViewHolder {
+        TextView textView;
+
+        public FootHolder(View view) {
+            super(view);
+            textView = (TextView) view.findViewById(R.id.textView4);
+        }
+    }
     class ViewHolder extends RecyclerView.ViewHolder {
         SimpleDraweeView imageView;
         TextView textView;
