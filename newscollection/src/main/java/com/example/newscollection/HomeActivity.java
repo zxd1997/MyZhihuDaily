@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.Fragment;
 import android.view.ViewParent;
+import android.view.WindowManager;
+
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,9 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -33,14 +39,17 @@ public class HomeActivity extends AppCompatActivity {
         tags.add("ZhihuDaily");
         tags.add("Cnbeta");
         tags.add("Others");
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         tabLayout.addTab(tabLayout.newTab().setText(tags.get(0)));
         tabLayout.addTab(tabLayout.newTab().setText(tags.get(1)));
         tabLayout.addTab(tabLayout.newTab().setText(tags.get(2)));
         fragments.add(MyFragment.newInstance("ZhihuDaily"));
         fragments.add(MyFragment.newInstance("Cnbeta"));
         fragments.add(MyFragment.newInstance("Others"));
-        viewPager.setAdapter(new MyFragmentAdapter(getSupportFragmentManager(), fragments, tags));
+        MyFragmentAdapter myFragmentAdapter = new MyFragmentAdapter(getSupportFragmentManager(), fragments, tags);
+        viewPager.setAdapter(myFragmentAdapter);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabsFromPagerAdapter(myFragmentAdapter);
     }
 
     @Override

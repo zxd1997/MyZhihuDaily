@@ -3,7 +3,11 @@ package com.example.newscollection;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,7 @@ public class MyFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String TAG = "tag";
     TextView textView;
+    View view;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -29,7 +34,8 @@ public class MyFragment extends Fragment {
 
     // TODO: Rename and change types and number of parameters
     public static Fragment newInstance(String tag) {
-        Fragment fragment = new Fragment();
+        MyFragment fragment = new MyFragment();
+        Log.d(TAG, "newInstance: " + tag);
         Bundle args = new Bundle();
         args.putString(TAG, tag);
         fragment.setArguments(args);
@@ -39,44 +45,34 @@ public class MyFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(TAG);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment, container, false);
-        textView = (TextView) view.findViewById(R.id.fragment_content);
+        view = inflater.inflate(R.layout.fragment, container, false);
+        Content content = null;
+        Log.d(TAG, "onCreateView: " + getArguments().getString(TAG));
+        switch (getArguments().getString(TAG)) {
+            case "ZhihuDaily": {
+                content = ZhihuContent.getInstance();
+                break;
+            }
+            case "Cnbeta": {
+                break;
+            }
+            default:
+                break;
+        }
+        if (content != null)
+            content.init(view, getContext());
         return view;
     }
-
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Bundle bundle = getArguments();
-//        textView.setText(bundle.getString(TAG));
-
     }
 
     @Override

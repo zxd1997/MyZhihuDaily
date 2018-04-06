@@ -71,7 +71,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return stories.size() + 1;
+        return stories.size() == 0 ? 0 : stories.size() + 1;
     }
 
     class FootHolder extends RecyclerView.ViewHolder {

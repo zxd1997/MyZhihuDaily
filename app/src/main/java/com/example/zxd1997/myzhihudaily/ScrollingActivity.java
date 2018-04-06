@@ -108,7 +108,8 @@ public class ScrollingActivity extends AppCompatActivity {
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
                 stories.clear();
-                recyclerView.scrollToPosition(0);
+                recyclerView.smoothScrollToPosition(0);
+                storyAdapter.notifyDataSetChanged();
                 calendar = Calendar.getInstance();
                 calendar.add(Calendar.DATE, 1);
                 today = format.format(calendar.getTime());
