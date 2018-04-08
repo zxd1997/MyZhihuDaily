@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.newscollection.ContentActivity">
+    <item
+        android:id="@+id/action_share"
+        android:icon="?android:attr/actionModeShareDrawable"
+        android:orderInCategory="100"
+        android:title="share"
+        app:showAsAction="always" />
+</menu>

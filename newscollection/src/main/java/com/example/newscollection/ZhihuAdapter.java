@@ -30,17 +30,17 @@ public class ZhihuAdapter extends RecyclerView.Adapter<ZhihuAdapter.ViewHolder> 
         if (viewType == 0) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_content, parent, false);
             viewHolder = new ViewHolder(view);
-//            viewHolder.view.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int position = viewHolder.getAdapterPosition();
-//                    Daily.Story story = stories.get(position);
-//                    Intent intent = new Intent(context, contentActivity.class);
-//                    intent.putExtra("id", story.getId() + "");
-//                    intent.putExtra("title", story.getTitle());
-//                    context.startActivity(intent);
-//                }
-//            });
+            viewHolder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = viewHolder.getAdapterPosition();
+                    Daily.Story story = stories.get(position);
+                    Intent intent = new Intent(context, ContentActivity.class);
+                    intent.putExtra("id", story.getId() + "");
+                    intent.putExtra("title", story.getTitle());
+                    context.startActivity(intent);
+                }
+            });
         } else {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer, parent, false);
             viewHolder = new ViewHolder(view);
