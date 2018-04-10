@@ -96,7 +96,7 @@ public class ZhihuFragment extends Fragment {
         }
     }
 
-    public void getFromService(String url) {
+    public synchronized void getFromService(String url) {
         Log.d("URL", "getFromService: " + url);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

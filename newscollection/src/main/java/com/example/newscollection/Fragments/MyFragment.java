@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.newscollection.Contents.CnbetaContent;
 import com.example.newscollection.Contents.Content;
 import com.example.newscollection.Contents.ZhihuContent;
 import com.example.newscollection.R;
@@ -58,6 +59,7 @@ public class MyFragment extends Fragment {
                 break;
             }
             case "Cnbeta": {
+                content = CnbetaContent.getInstance();
                 break;
             }
             default:

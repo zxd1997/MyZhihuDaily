@@ -76,7 +76,7 @@ public class ZhihuCommentFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public void getFromService(String uri) {
+    public synchronized void getFromService(String uri) {
         Log.d("uri", "getFromService: " + uri);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

@@ -61,8 +61,8 @@ public class ZhihuContent implements Content {
 
     public static ZhihuContent getInstance() {
         if (zhihuContent == null)
-            return new ZhihuContent();
-        else return zhihuContent;
+            zhihuContent = new ZhihuContent();
+        return zhihuContent;
     }
 
     @Override
