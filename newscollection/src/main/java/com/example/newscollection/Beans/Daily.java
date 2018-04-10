@@ -1,4 +1,4 @@
-package com.example.newscollection;
+package com.example.newscollection.Beans;
 
 import java.util.List;
 

@@ -1,16 +1,17 @@
-package com.example.newscollection;
+package com.example.newscollection.Adapters;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.newscollection.Activities.ContentActivity;
+import com.example.newscollection.Beans.Daily;
+import com.example.newscollection.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class ZhihuAdapter extends RecyclerView.Adapter<ZhihuAdapter.ViewHolder> 
                     Intent intent = new Intent(context, ContentActivity.class);
                     intent.putExtra("id", story.getId() + "");
                     intent.putExtra("title", story.getTitle());
+                    intent.putExtra("type", "Zhihu");
                     context.startActivity(intent);
                 }
             });

@@ -1,10 +1,6 @@
-package com.example.newscollection;
+package com.example.newscollection.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +19,8 @@ import android.webkit.WebView;
 
 import android.support.v7.widget.Toolbar;
 
+import com.example.newscollection.Beans.ZhihuNewsContent;
+import com.example.newscollection.R;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
@@ -118,14 +116,6 @@ public class ZhihuFragment extends Fragment {
                 if (type.contains("json")) {
                     message.what = JSON;
                     message.obj = response.body().string();
-                } else if (type.contains("image")) {
-                    message.what = IMAGE;
-                    byte[] bytes = response.body().bytes();
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    Matrix matrix = new Matrix();
-                    matrix.setScale(4.6f, 4.6f);
-                    Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                    message.obj = resizeBmp;
                 }
                 handler.sendMessage(message);
             }

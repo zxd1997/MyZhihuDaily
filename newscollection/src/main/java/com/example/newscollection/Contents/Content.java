@@ -1,4 +1,4 @@
-package com.example.newscollection;
+package com.example.newscollection.Contents;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

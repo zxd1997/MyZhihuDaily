@@ -1,4 +1,4 @@
-package com.example.newscollection;
+package com.example.newscollection.Contents;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.newscollection.Beans.Daily;
+import com.example.newscollection.R;
+import com.example.newscollection.SimpleDecoration;
+import com.example.newscollection.Adapters.ZhihuAdapter;
 import com.google.gson.Gson;
 
 import java.io.IOException;

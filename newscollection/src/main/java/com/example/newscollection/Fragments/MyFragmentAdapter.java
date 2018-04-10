@@ -1,4 +1,4 @@
-package com.example.newscollection;
+package com.example.newscollection.Fragments;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
