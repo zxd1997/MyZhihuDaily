@@ -20,7 +20,8 @@
             android:layout_margin="3dp"
             android:layout_weight="2.9"
             fresco:placeholderImage="@mipmap/ic_launcher"
-            fresco:roundedCornerRadius="3dp" />
+            fresco:roundedCornerRadius="3dp"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/newsTitle"

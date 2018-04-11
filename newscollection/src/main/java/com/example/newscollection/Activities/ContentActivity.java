@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.example.newscollection.Beans.ZhihuComments;
+import com.example.newscollection.Fragments.CnbetaFragment;
 import com.example.newscollection.R;
 import com.example.newscollection.Fragments.ZhihuFragment;
 
@@ -21,9 +22,9 @@ public class ContentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final Intent intent = getIntent();
-        final String id = intent.getStringExtra("id");
-        final String title = intent.getStringExtra("title");
         final String type = intent.getStringExtra("type");
+        final String title = intent.getStringExtra("title");
+        final String id = intent.getStringExtra("id");
         setContentView(R.layout.activity_content);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -31,6 +32,8 @@ public class ContentActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = null;
         final Intent intent1 = new Intent(getApplicationContext(), CommentActivity.class);
+        ;
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab1);
         switch (type) {
             case "Zhihu": {
                 fragment = ZhihuFragment.newInstance(id, title);
@@ -38,7 +41,9 @@ public class ContentActivity extends AppCompatActivity {
                 intent1.putExtra("type", type);
                 break;
             }
-            case "Cmbeta": {
+            case "Cnbeta": {
+                fab.setVisibility(View.GONE);
+//                fragment= CnbetaFragment.newInstance();
                 break;
             }
             default:
@@ -46,7 +51,6 @@ public class ContentActivity extends AppCompatActivity {
         }
         fragmentTransaction.add(R.id.fragment_container, fragment);
         fragmentTransaction.commit();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab1);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

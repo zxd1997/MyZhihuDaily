@@ -5,11 +5,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
+import android.widget.TextView;
 
+import com.example.newscollection.Adapters.CnbetaAdapter;
+import com.example.newscollection.Beans.Cnbeta;
 import com.example.newscollection.R;
 import com.example.newscollection.SimpleDecoration;
 
@@ -18,6 +22,8 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,33 +34,80 @@ import okhttp3.Response;
 
 public class CnbetaContent implements Content {
     static CnbetaContent cnbetaContent = null;
+    List<Cnbeta> cnbetas = new ArrayList<Cnbeta>();
+    CnbetaAdapter cnbetaAdapter;
     public Handler handler = new Handler() {
         public void handleMessage(Message message) {
             Log.d("obj", "HandleMessage: " + message.obj);
             String xml = (String) message.obj;
             Log.d("xml", "HandleMessage: " + xml);
+
             try {
                 XmlPullParser parser = Xml.newPullParser();
-
-                Log.d("parse", "HandleMessage: ");
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xml.getBytes());
                 parser.setInput(byteArrayInputStream, "utf-8");
                 int eventtype = parser.getEventType();
-
-                Log.d("event", "HandleMessage: " + eventtype);
+                Cnbeta cnbeta = null;
+                Log.d("event", "HandleMessage: " + eventtype + parser.END_DOCUMENT);
                 while (eventtype != parser.END_DOCUMENT) {
+                    Log.d("event", "HandleMessage: " + eventtype);
                     switch (eventtype) {
                         case XmlPullParser.START_TAG: {
-                            Log.d("start_tag", "HandleMessage: " + parser.getName() + "\n" + parser.getAttributeValue(0));
+                            String name = parser.getName();
+                            Log.d("name", "HandleMessage: " + name);
+                            switch (name) {
+                                case "feed": {
+                                    cnbetas.clear();
+                                    break;
+                                }
+                                case "title": {
+                                    if (cnbeta != null) {
+                                        cnbeta.setTitle(parser.nextText());
+                                        Log.d("title", "HandleMessage: " + cnbeta.getTitle());
+                                    }
+                                    break;
+                                }
+                                case "entry": {
+                                    cnbeta = new Cnbeta();
+                                    break;
+                                }
+                                case "link": {
+                                    if (cnbeta != null) {
+                                        cnbeta.setLink(parser.getAttributeValue(0));
+                                        Log.d("link", "HandleMessage: " + cnbeta.getLink());
+                                    }
+                                    break;
+                                }
+                                case "summary": {
+                                    cnbeta.setHtml(parser.nextText());
+                                    Log.d("html", "HandleMessage: " + cnbeta.getHtml());
+                                    break;
+                                }
+                                case "published": {
+                                    cnbeta.setPublished(parser.nextText());
+                                    Log.d("publichsed", "HandleMessage: " + cnbeta.getPublished());
+                                }
+                            }
+                            break;
+                        }
+                        case XmlPullParser.END_TAG: {
+                            if (parser.getName().equals("entry")) {
+                                cnbetas.add(cnbeta);
+                            }
                         }
                     }
-                    parser.next();
+                    eventtype = parser.next();
                 }
             } catch (XmlPullParserException e) {
 
             } catch (IOException e) {
 
             }
+            TextView textView = (TextView) view.findViewById(R.id.fragment_content);
+            textView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            cnbetaAdapter.notifyDataSetChanged();
+            swipeRefreshLayout.setRefreshing(false);
         }
     };
     View view;
@@ -84,7 +137,17 @@ public class CnbetaContent implements Content {
                 recyclerView.smoothScrollToPosition(0);
             }
         });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                getFromService("http://rssdiy.com/u/2/cnbeta.xml");
+            }
+        });
         recyclerView.addItemDecoration(new SimpleDecoration(context));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        cnbetaAdapter = new CnbetaAdapter(context, cnbetas);
+        recyclerView.setAdapter(cnbetaAdapter);
         getFromService("http://rssdiy.com/u/2/cnbeta.xml");
     }
 
