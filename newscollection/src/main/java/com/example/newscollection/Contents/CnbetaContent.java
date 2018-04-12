@@ -144,6 +144,8 @@ public class CnbetaContent implements Content {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
+                cnbetas.clear();
+                cnbetaAdapter.notifyDataSetChanged();
                 getFromService("http://rssdiy.com/u/2/cnbeta.xml");
             }
         });

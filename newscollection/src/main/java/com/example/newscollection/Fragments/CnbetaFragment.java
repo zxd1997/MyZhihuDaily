@@ -18,6 +18,11 @@ import android.widget.TextView;
 
 import com.example.newscollection.R;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 public class CnbetaFragment extends Fragment {
     private static final String TITLE = "title";
     private static final String LINK = "link";
@@ -49,6 +54,19 @@ public class CnbetaFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    public static String getNewContent(String htmltext) {
+        try {
+            Document doc = Jsoup.parse(htmltext);
+            Elements elements = doc.getElementsByTag("img");
+            for (Element element : elements) {
+                element.attr("width", "100%").attr("height", "auto");
+            }
+
+            return doc.toString();
+        } catch (Exception e) {
+            return htmltext;
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,7 +74,7 @@ public class CnbetaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cnbeta, container, false);
         WebView webView = view.findViewById(R.id.webview1);
         webView.getSettings().setDefaultTextEncodingName("UTF-8");
-        webView.loadData(getArguments().getString(HTML), "text/html;charset=UTF-8", null);
+        webView.loadData(getNewContent(getArguments().getString(HTML)), "text/html;charset=UTF-8", null);
         Toolbar toolbar = view.findViewById(R.id.toolbar4);
         toolbar.setTitle(getArguments().getString(TITLE));
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -82,6 +100,8 @@ public class CnbetaFragment extends Fragment {
                 return true;
             }
         });
+        TextView textView1 = view.findViewById(R.id.footer);
+        textView1.setText(getArguments().getString(PUBLISHED) + "\nFrom Cnbeta");
         return view;
     }
 
