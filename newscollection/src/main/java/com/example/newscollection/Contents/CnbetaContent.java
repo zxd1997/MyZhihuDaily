@@ -84,7 +84,10 @@ public class CnbetaContent implements Content {
                                     break;
                                 }
                                 case "published": {
-                                    cnbeta.setPublished(parser.nextText());
+                                    String tmp = parser.nextText();
+                                    tmp = tmp.replace("T", " ");
+                                    tmp = tmp.replace("Z", "");
+                                    cnbeta.setPublished(tmp);
                                     Log.d("publichsed", "HandleMessage: " + cnbeta.getPublished());
                                 }
                             }

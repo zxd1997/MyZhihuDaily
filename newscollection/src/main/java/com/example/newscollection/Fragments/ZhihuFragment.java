@@ -149,7 +149,7 @@ public class ZhihuFragment extends Fragment {
                 if (item.getItemId() == R.id.action_share) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_TEXT, getArguments().getString(TITLE) + "\nhttp://daily.zhihu.com/story/" + getArguments().getString(ID) + "\nFrom Collection");
+                    intent.putExtra(Intent.EXTRA_TEXT, getArguments().getString(TITLE) + "\nhttp://daily.zhihu.com/story/" + getArguments().getString(ID) + "\nFrom Zhihu Daily");
                     startActivity(Intent.createChooser(intent, "Share"));
                 }
                 return true;

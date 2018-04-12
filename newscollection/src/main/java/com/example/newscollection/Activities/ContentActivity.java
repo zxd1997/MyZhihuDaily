@@ -23,8 +23,6 @@ public class ContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         final Intent intent = getIntent();
         final String type = intent.getStringExtra("type");
-        final String title = intent.getStringExtra("title");
-        final String id = intent.getStringExtra("id");
         setContentView(R.layout.activity_content);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
@@ -32,10 +30,11 @@ public class ContentActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = null;
         final Intent intent1 = new Intent(getApplicationContext(), CommentActivity.class);
-        ;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab1);
         switch (type) {
             case "Zhihu": {
+                final String title = intent.getStringExtra("title");
+                final String id = intent.getStringExtra("id");
                 fragment = ZhihuFragment.newInstance(id, title);
                 intent1.putExtra("id", id);
                 intent1.putExtra("type", type);
@@ -43,7 +42,11 @@ public class ContentActivity extends AppCompatActivity {
             }
             case "Cnbeta": {
                 fab.setVisibility(View.GONE);
-//                fragment= CnbetaFragment.newInstance();
+                final String title = intent.getStringExtra("title");
+                final String html = intent.getStringExtra("html");
+                final String link = intent.getStringExtra("link");
+                final String published = intent.getStringExtra("published");
+                fragment = CnbetaFragment.newInstance(title, html, link, published);
                 break;
             }
             default:

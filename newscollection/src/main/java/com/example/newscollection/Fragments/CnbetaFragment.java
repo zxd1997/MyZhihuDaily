@@ -1,36 +1,45 @@
 package com.example.newscollection.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.example.newscollection.R;
 
 public class CnbetaFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String TITLE = "title";
+    private static final String LINK = "link";
+    private static final String HTML = "html";
+    private static final String PUBLISHED = "published";
+    private String title;
+    private String link;
+    private String html;
+    private String published;
 
 
     public CnbetaFragment() {
         // Required empty public constructor
     }
 
-    public static CnbetaFragment newInstance(String param1, String param2) {
+    public static CnbetaFragment newInstance(String title, String html, String link, String published) {
         CnbetaFragment fragment = new CnbetaFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(TITLE, title);
+        args.putString(HTML, html);
+        args.putString(LINK, link);
+        args.putString(PUBLISHED, published);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,10 +47,6 @@ public class CnbetaFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -51,9 +56,38 @@ public class CnbetaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cnbeta, container, false);
         WebView webView = view.findViewById(R.id.webview1);
         webView.getSettings().setDefaultTextEncodingName("UTF-8");
-//        webView.loadData();
+        webView.loadData(getArguments().getString(HTML), "text/html;charset=UTF-8", null);
+        Toolbar toolbar = view.findViewById(R.id.toolbar4);
+        toolbar.setTitle(getArguments().getString(TITLE));
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+        TextView textView = view.findViewById(R.id.textView5);
+        textView.setText(getArguments().getString(TITLE));
+        setHasOptionsMenu(true);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.action_share) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, getArguments().getString(TITLE) + getArguments().getString(LINK) + "\nFrom Cnbeta");
+                    startActivity(Intent.createChooser(intent, "Share"));
+                }
+                return true;
+            }
+        });
         return view;
     }
 
-
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.menu_content, menu);
+        super.onCreateOptionsMenu(menu, menuInflater);
+    }
 }
